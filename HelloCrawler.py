@@ -13,7 +13,7 @@ try:
     Password = IDPassword.Password
     
 except ModuleNotFoundError:
-    #Define your id password here
+    # Define your id password here
     ID = 'Your ID'
     Password = 'Your Password'
 
@@ -39,6 +39,21 @@ while Retry:
         
         while True:
             try:
+            
+                ErrorCode, Time = PTTCrawler.getTime()
+                if ErrorCode != PTTTelnetCrawlerLibraryErrorCode.Success:
+                    PTTCrawler.Log('Get ptt time error!')
+                    continue
+                #PTTCrawler.Log('PTT time: ' + Time)
+                Time = Time[:Time.find(':')]
+                
+                if 5 <= int(Time) and int(Time) < 11:
+                    PushContent = '早安~'
+                elif 12 <= int(Time) and int(Time) < 18:
+                    PushContent = '午安~'
+                else:
+                    PushContent = '晚安~'
+                    
                 if not len(LastIndexList) == 0:
                     LastIndex = LastIndexList.pop()
                 ErrorCode, LastIndexList = PTTCrawler.getNewPostIndexList(Board, LastIndex)
@@ -46,28 +61,32 @@ while Retry:
                     PTTCrawler.Log('Get newest list error: ' + str(ErrorCode))
                     time.sleep(1)
                     continue
+                if First:
+                    First = False
+                    continue
                 if not len(LastIndexList) == 0:
                     PTTCrawler.Log('Detected ' + str(len(LastIndexList)) + ' new post')
                     for NewPostIndex in LastIndexList:
                 
                         PTTCrawler.Log('Detected ' + str(NewPostIndex))
                         
-                        if First:
-                            First = False
+                        ErrorCode, Post = PTTCrawler.getPostInfoByIndex(Board, NewPostIndex)
+                        if ErrorCode == PTTTelnetCrawlerLibraryErrorCode.PostDeleted:
+                            PTTCrawler.Log('Post has been deleted')
                             continue
-                        
-                        ErrorCode, Time = PTTCrawler.getTime()
+                        if ErrorCode == PTTTelnetCrawlerLibraryErrorCode.WebFormatError:
+                            PTTCrawler.Log('Web structure error')
+                            continue
                         if ErrorCode != PTTTelnetCrawlerLibraryErrorCode.Success:
-                            PTTCrawler.Log('Get ptt time error!')
+                            PTTCrawler.Log('Get post by index fail')
                             continue
-                        Time = Time[:Time.find(':')]
+                        if Post == None:
+                            PTTCrawler.Log('Post is empty')
+                            continue
                         
-                        if 5 <= int(Time) and int(Time) < 11:
-                            PushContent = '早安~'
-                        elif 12 <= int(Time) and int(Time) < 18:
-                            PushContent = '午安~'
-                        else:
-                            PushContent = '晚安~'
+                        if ID in Post.getPostContent() or ID in Post.getTitle():
+                            PTTCrawler.Log('User is not allow push')
+                            continue
                         
                         ErrorCode = PTTCrawler.pushByIndex(Board, PTTCrawler.PushType_Push, PushContent, NewPostIndex)
                         
