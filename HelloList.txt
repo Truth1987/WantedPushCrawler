@@ -1,0 +1,8 @@
+{User} 安安!
+{User} {TimeHello}
+{TimeHello}
+{User} 哈囉~
+嗨 {User}
+CodingMan 也跟你問個安
+安安
+倪好

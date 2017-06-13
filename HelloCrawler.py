@@ -1,6 +1,7 @@
 import traceback
 import sys
 import time
+import random
 import os.path
 sys.path.append('../PTTTelnetCrawlerLibrary')
 import PTTTelnetCrawlerLibrary
@@ -24,6 +25,26 @@ Board = 'Wanted'
 Retry = True
 
 LastNewestPostIndex = 0
+WantList = []
+
+with open('WantList.txt') as fp:
+    for line in fp:
+        if len(line) == 0:
+            continue
+        WantList.append(line.replace('\n', '').replace('\r', ''))
+
+HelloList = []
+with open('HelloList.txt') as fp:
+    for line in fp:
+        if len(line) == 0:
+            continue
+        HelloList.append(line.replace('\n', '').replace('\r', ''))
+PublicList = []
+with open('PublicList.txt') as fp:
+    for line in fp:
+        if len(line) == 0:
+            continue
+        PublicList.append(line.replace('\n', '').replace('\r', ''))
 
 while Retry:
     PTTCrawler = PTTTelnetCrawlerLibrary.PTTTelnetCrawlerLibrary(ID, Password, False)
@@ -48,11 +69,11 @@ while Retry:
                 Time = Time[:Time.find(':')]
                 
                 if 5 <= int(Time) and int(Time) < 11:
-                    PushContent = '早安~'
+                    TimeHello = '早安~喔~'
                 elif 12 <= int(Time) and int(Time) < 18:
-                    PushContent = '午安~'
+                    TimeHello = '午安~呦~'
                 else:
-                    PushContent = '晚安~'
+                    TimeHello = '晚安~囉>.<'
                     
                 if not len(LastIndexList) == 0:
                     LastIndex = LastIndexList.pop()
@@ -88,6 +109,23 @@ while Retry:
                             PTTCrawler.Log('User is not allow push')
                             continue
                         
+                        PostUser = Post.getPostAuthor()
+                        PostUser = PostUser[PostUser.find('(') + 1:PostUser.find(')')]
+                        
+                        if '5566' in Post.getPostAuthor():
+                            PushContent = '5566 pass'
+                        elif '抽菸' in Post.getPostContent():
+                            PushContent = '抽菸 pass'
+                        elif '問安' in Post.getTitle():
+                            PushContent = random.choice(HelloList).replace('{User}', PostUser).replace('{TimeHello}', TimeHello)
+                        elif '徵求' in Post.getTitle():
+                            PushContent = random.choice(WantList).replace('{User}', PostUser).replace('{TimeHello}', TimeHello)
+                        elif '公告' in Post.getTitle():
+                            PushContent = random.choice(PublicList).replace('{User}', PostUser).replace('{TimeHello}', TimeHello)
+                        else:
+                            PushContent = PostUser + ' ' + TimeContent
+                        
+                        PTTCrawler.Log('Push: ' + PushContent)
                         ErrorCode = PTTCrawler.pushByIndex(Board, PTTCrawler.PushType_Push, PushContent, NewPostIndex)
                         
                         if ErrorCode == PTTTelnetCrawlerLibraryErrorCode.Success:
