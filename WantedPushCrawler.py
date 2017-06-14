@@ -3,7 +3,7 @@ import sys
 import time
 import random
 import os.path
-sys.path.append('../PTTTelnetCrawlerLibrary')
+sys.path.append('../PTTCrawlerLibrary')
 import PTT
 try:
     sys.path.append('../IDPassword')
