@@ -4,8 +4,7 @@ import time
 import random
 import os.path
 sys.path.append('../PTTTelnetCrawlerLibrary')
-import PTTTelnetCrawlerLibrary
-import PTTTelnetCrawlerLibraryErrorCode
+import PTT
 try:
     sys.path.append('../IDPassword')
     import IDPassword
@@ -47,7 +46,7 @@ with open('PublicList.txt') as fp:
         PublicList.append(line.replace('\n', '').replace('\r', ''))
 
 while Retry:
-    PTTCrawler = PTTTelnetCrawlerLibrary.PTTTelnetCrawlerLibrary(ID, Password, False)
+    PTTCrawler = PTT.Crawler(ID, Password, True)
     if not PTTCrawler.isLoginSuccess():
         PTTCrawler.Log('Login fail')
     else:
@@ -62,7 +61,7 @@ while Retry:
             try:
             
                 ErrorCode, Time = PTTCrawler.getTime()
-                if ErrorCode != PTTTelnetCrawlerLibraryErrorCode.Success:
+                if ErrorCode != PTT.Success:
                     PTTCrawler.Log('Get ptt time error!')
                     continue
                 #PTTCrawler.Log('PTT time: ' + Time)
@@ -78,7 +77,7 @@ while Retry:
                 if not len(LastIndexList) == 0:
                     LastIndex = LastIndexList.pop()
                 ErrorCode, LastIndexList = PTTCrawler.getNewPostIndexList(Board, LastIndex)
-                if ErrorCode != PTTTelnetCrawlerLibraryErrorCode.Success:
+                if ErrorCode != PTT.Success:
                     PTTCrawler.Log('Get newest list error: ' + str(ErrorCode))
                     time.sleep(1)
                     continue
@@ -92,13 +91,13 @@ while Retry:
                         PTTCrawler.Log('Detected ' + str(NewPostIndex))
                         
                         ErrorCode, Post = PTTCrawler.getPostInfoByIndex(Board, NewPostIndex)
-                        if ErrorCode == PTTTelnetCrawlerLibraryErrorCode.PostDeleted:
+                        if ErrorCode == PTT.PostDeleted:
                             PTTCrawler.Log('Post has been deleted')
                             continue
-                        if ErrorCode == PTTTelnetCrawlerLibraryErrorCode.WebFormatError:
+                        if ErrorCode == PTT.WebFormatError:
                             PTTCrawler.Log('Web structure error')
                             continue
-                        if ErrorCode != PTTTelnetCrawlerLibraryErrorCode.Success:
+                        if ErrorCode != PTT.Success:
                             PTTCrawler.Log('Get post by index fail')
                             continue
                         if Post == None:
@@ -128,7 +127,7 @@ while Retry:
                         PTTCrawler.Log('Push: ' + PushContent)
                         ErrorCode = PTTCrawler.pushByIndex(Board, PTTCrawler.PushType_Push, PushContent, NewPostIndex)
                         
-                        if ErrorCode == PTTTelnetCrawlerLibraryErrorCode.Success:
+                        if ErrorCode == PTT.Success:
                             PTTCrawler.Log('Push success')
                         else:
                             PTTCrawler.Log('Push fail')
