@@ -46,7 +46,7 @@ with open('PublicList.txt') as fp:
         PublicList.append(line.replace('\n', '').replace('\r', ''))
 
 while Retry:
-    PTTCrawler = PTT.Crawler(ID, Password, True)
+    PTTCrawler = PTT.Crawler(ID, Password, False)
     if not PTTCrawler.isLoginSuccess():
         PTTCrawler.Log('Login fail')
     else:
@@ -54,10 +54,10 @@ while Retry:
         LastIndexList = [0]
         
         NoFastPushWait = False
-        
         First = True
         
-        while True:
+        PTTCrawler.Log('Start detect new post in ' + Board)
+        while Retry:
             try:
             
                 ErrorCode, Time = PTTCrawler.getTime()
