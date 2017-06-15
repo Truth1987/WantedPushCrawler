@@ -50,6 +50,7 @@ while Retry:
     if not PTTCrawler.isLoginSuccess():
         PTTCrawler.Log('Login fail')
     else:
+        #PTTCrawler.setLogLevel(PTT.LogLevel_DEBUG)
         LastIndex = 0
         LastIndexList = [0]
         
@@ -81,11 +82,15 @@ while Retry:
                     PTTCrawler.Log('Get newest list error: ' + str(ErrorCode))
                     time.sleep(1)
                     continue
-                if First:
-                    First = False
-                    continue
+                
                 if not len(LastIndexList) == 0:
                     PTTCrawler.Log('Detected ' + str(len(LastIndexList)) + ' new post')
+                    if First:
+                        PTTCrawler.Log('Pass the post already exist')
+                        PTTCrawler.Log(str(LastIndexList))
+                        First = False
+                        continue
+                    
                     for NewPostIndex in LastIndexList:
                 
                         PTTCrawler.Log('Detected ' + str(NewPostIndex))
@@ -122,7 +127,7 @@ while Retry:
                         elif '公告' in Post.getTitle():
                             PushContent = random.choice(PublicList).replace('{User}', PostUser).replace('{TimeHello}', TimeHello)
                         else:
-                            PushContent = PostUser + ' ' + TimeContent
+                            PushContent = PostUser + ' ' + TimeHello
                         
                         PTTCrawler.Log('Push: ' + PushContent)
                         ErrorCode = PTTCrawler.pushByIndex(Board, PTTCrawler.PushType_Push, PushContent, NewPostIndex)
