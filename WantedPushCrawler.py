@@ -72,7 +72,7 @@ while Retry:
                 elif 12 <= int(Time) and int(Time) < 18:
                     TimeHello = '午安~呦~'
                 else:
-                    TimeHello = '晚安~囉>.<'
+                    TimeHello = '晚安~囉~'
                     
                 if not len(LastIndexList) == 0:
                     LastIndex = LastIndexList.pop()
@@ -137,8 +137,7 @@ while Retry:
                 traceback.print_exception(*exc_info)
                 PTTCrawler.Log('Interrupted by user')
                 PTTCrawler.logout()
-                Retry = False
-                break
+                sys.exit()
             except EOFError:
                 exc_info = sys.exc_info()
                 traceback.print_exception(*exc_info)
