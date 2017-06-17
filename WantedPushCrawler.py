@@ -2,21 +2,22 @@ import traceback
 import sys
 import time
 import random
-import os.path
-sys.path.append('../PTTCrawlerLibrary')
+import json
+import getpass
+sys.path.append('..\\PTTCrawlerLibrary')
 import PTT
+
+# If you want to automatically login define Account.txt
+# {"ID":"YourID", "Password":"YourPW"}
 try:
-    sys.path.append('../IDPassword')
-    import IDPassword
-
-    ID = IDPassword.ID
-    Password = IDPassword.Password
-    
-except ModuleNotFoundError:
-    # Define your id password here
-    ID = 'Your ID'
-    Password = 'Your Password'
-
+    with open('Account.txt') as AccountFile:
+        Account = json.load(AccountFile)
+        ID = Account['ID']
+        Password = Account['Password']
+except FileNotFoundError:
+    print('Welcome to WantedPushCrawler v 1.0.17.0617')
+    ID = input('Input ID: ')
+    Password = getpass.getpass('Input password: ')
 
 print('Hello Crawler')
 
@@ -26,20 +27,20 @@ Retry = True
 LastNewestPostIndex = 0
 WantList = []
 
-with open('WantList.txt') as fp:
+with open('WantList.txt', encoding = 'utf8') as fp:
     for line in fp:
         if len(line) == 0:
             continue
         WantList.append(line.replace('\n', '').replace('\r', ''))
 
 HelloList = []
-with open('HelloList.txt') as fp:
+with open('HelloList.txt', encoding = 'utf8') as fp:
     for line in fp:
         if len(line) == 0:
             continue
         HelloList.append(line.replace('\n', '').replace('\r', ''))
 PublicList = []
-with open('PublicList.txt') as fp:
+with open('PublicList.txt', encoding = 'utf8') as fp:
     for line in fp:
         if len(line) == 0:
             continue
@@ -138,8 +139,10 @@ while Retry:
                             PTTCrawler.Log('Push fail')
                             time.sleep(1)
             except KeyboardInterrupt:
+                '''
                 exc_info = sys.exc_info()
                 traceback.print_exception(*exc_info)
+                '''
                 PTTCrawler.Log('Interrupted by user')
                 PTTCrawler.logout()
                 sys.exit()
