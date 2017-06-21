@@ -10,7 +10,7 @@ import PTT
 # If you want to automatically login define Account.txt
 # {"ID":"YourID", "Password":"YourPW"}
 try:
-    with open('Account.txt') as AccountFile:
+    with open('Account.txt', encoding = 'utf-8-sig') as AccountFile:
         Account = json.load(AccountFile)
         ID = Account['ID']
         Password = Account['Password']
@@ -27,20 +27,20 @@ Retry = True
 LastNewestPostIndex = 0
 WantList = []
 
-with open('WantList.txt', encoding = 'utf8') as fp:
+with open('WantList.txt', encoding = 'utf-8-sig') as fp:
     for line in fp:
         if len(line) == 0:
             continue
         WantList.append(line.replace('\n', '').replace('\r', ''))
 
 HelloList = []
-with open('HelloList.txt', encoding = 'utf8') as fp:
+with open('HelloList.txt', encoding = 'utf-8-sig') as fp:
     for line in fp:
         if len(line) == 0:
             continue
         HelloList.append(line.replace('\n', '').replace('\r', ''))
 PublicList = []
-with open('PublicList.txt', encoding = 'utf8') as fp:
+with open('PublicList.txt', encoding = 'utf-8-sig') as fp:
     for line in fp:
         if len(line) == 0:
             continue
@@ -109,7 +109,7 @@ else:
                         PTTCrawler.Log('Post is empty')
                         continue
                     
-                    if ID in Post.getPostContent() or ID in Post.getTitle():
+                    if ID.lower() in Post.getPostContent().lower() or ID.lower() in Post.getTitle().lower():
                         PTTCrawler.Log('User is not allow push')
                         continue
                     
