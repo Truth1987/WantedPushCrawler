@@ -25,12 +25,6 @@ def isIDinPost(PostContent):
         if not i.lower() in PostContent.lower():
             return False
     return True
-'''
-TestString = 'QQ c_odingMAdfsdfn'
-
-print(isIDinPost(TestString))
-sys.exit()
-'''
 
 Board = 'Wanted'
 Retry = True
