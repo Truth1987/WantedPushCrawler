@@ -6,7 +6,7 @@ import json
 import getpass
 sys.path.append('..\\PTTCrawlerLibrary')
 import PTT
-print('Welcome to WantedPushCrawler v 1.0.17.0621')
+print('Welcome to WantedPushCrawler v 1.0.17.0622')
 
 # If you want to automatically login define Account.txt
 # {"ID":"YourID", "Password":"YourPW"}
@@ -21,6 +21,20 @@ except FileNotFoundError:
     Password = getpass.getpass('Input password: ')
 
 def isIDinPost(PostContent):
+    
+    LetterList = 'abcdefghijklmnopqrstuvwxyz'
+    BigUpperLetterList = 'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'
+    BigLowerLetterList = 'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
+    
+    for i in range(len(BigUpperLetterList)):
+        PostContent = PostContent.replace(list(BigUpperLetterList)[i], list(LetterList)[i])
+        PostContent = PostContent.replace(list(BigLowerLetterList)[i], list(LetterList)[i])
+    
+    NumberList = '0123456789'
+    BigNumberList = '０１２３４５６７８９'
+    for i in range(len(NumberList)):
+        PostContent = PostContent.replace(list(BigNumberList)[i], list(NumberList)[i])
+    
     for i in list(ID):
         if not i.lower() in PostContent.lower():
             return False
