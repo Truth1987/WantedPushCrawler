@@ -65,7 +65,7 @@ with open('PublicList.txt', encoding = 'utf-8-sig') as fp:
             continue
         PublicList.append(line.replace('\n', '').replace('\r', ''))
 
-PTTCrawler = PTT.Crawler(ID, Password, False)
+PTTCrawler = PTT.Library(ID, Password, False)
 if not PTTCrawler.isLoginSuccess():
     PTTCrawler.Log('Login fail')
 else:
