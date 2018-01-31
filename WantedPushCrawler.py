@@ -4,12 +4,12 @@ import time
 import random
 import json
 import getpass
-sys.path.append('..\\PTTCrawlerLibrary')
-import PTT
-print('Welcome to WantedPushCrawler v 1.0.17.0622')
 
-# If you want to automatically login define Account.txt
-# {"ID":"YourID", "Password":"YourPW"}
+from PTTLibrary import PTT
+print('Welcome to WantedPushCrawler v 1.0.18.0131')
+
+# 如果你想要自動登入，建立 Account.txt
+# 然後裡面填上 {"ID":"YourID", "Password":"YourPW"}
 try:
     with open('Account.txt', encoding = 'utf-8-sig') as AccountFile:
         Account = json.load(AccountFile)
